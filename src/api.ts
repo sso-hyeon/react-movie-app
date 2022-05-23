@@ -7,6 +7,7 @@ interface Imovie {
     poster_path: string;
     title: string;
     overview: string;
+    release_date: string;
 }
 
 export interface IGetMoviesResult {
@@ -20,8 +21,101 @@ export interface IGetMoviesResult {
     total_results: number;
 }
 
-export function getMovies() {
+interface MovieGenres {
+    name: string;
+}
+
+export interface IGetMovieInfo {
+    title: string;
+    backdrop_path: string;
+    overview: string;
+    release_date: string;
+    runtime: number;
+    original_language: string;
+    vote_average: string;
+    genres: MovieGenres[];
+    homepage: string;
+    tagline: string;
+}
+
+interface SearchList {
+    id: number;
+    original_title: string;
+    name: string;
+    poster_path: string;
+    vote_average: number;
+    overview: string;
+    backdrop_path: string;
+    media_type: string;
+}
+
+export interface IGetSearchLsit {
+    page: number;
+    results: SearchList[];
+    total_pages: number;
+    total_results: number;
+}
+
+interface ITvShows {
+    id: number;
+    backdrop_path: string;
+    poster_path: string;
+    name: string;
+    overview: string;
+    release_date: string;
+}
+
+export interface IGetTvShowsResult {
+    page: number;
+    results: ITvShows[];
+    total_pages: number;
+    total_results: number;
+}
+
+interface TvShowGenres {
+    name: string;
+}
+
+export interface IGetTvShowInfo {
+    name: string;
+    backdrop_path: string;
+    overview: string;
+    first_air_date: string;
+    runtime: number;
+    original_language: string;
+    vote_average: string;
+    genres: TvShowGenres[];
+    homepage: string;
+    tagline: string;
+}
+
+export const getMovies = async () => {
     return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(response =>
         response.json()
     );
-}
+};
+
+export const getMovieInfo = async (movieId?: string) => {
+    return fetch(`${BASE_PATH}/movie/${movieId}?api_key=${API_KEY}`).then(response =>
+        response.json()
+    );
+};
+
+export const serchKeyword = async (keyword?: string) => {
+    return fetch(
+        `${BASE_PATH}/search/multi?api_key=${API_KEY}&language=en-US&query=${keyword}&include_adult=false`
+    ).then(response => response.json());
+};
+
+export const getTvShows = async () => {
+    return fetch(`
+    ${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=en-US`).then(response =>
+        response.json()
+    );
+};
+
+export const getTvShowInfo = async (tvId?: string) => {
+    return fetch(`${BASE_PATH}/tv/${tvId}?api_key=${API_KEY}`).then(response =>
+        response.json()
+    );
+};

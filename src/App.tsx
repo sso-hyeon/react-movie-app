@@ -9,13 +9,13 @@ function App() {
         <Router basename={process.env.PUBLIC_URL}>
             <Header />
             <Switch>
-                <Route path="/tv">
+                <Route path={["/tv", "/tv/:tvId"]}>
                     <Tv />
                 </Route>
                 <Route path="/search">
                     <Search />
                 </Route>
-                <Route path="/">
+                <Route path={["/", "/movies/:movieId"]}>
                     <Home />
                 </Route>
             </Switch>
