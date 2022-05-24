@@ -101,7 +101,7 @@ export const getMovieInfo = async (movieId?: string) => {
     );
 };
 
-export const serchKeyword = async (keyword?: string) => {
+export const searchKeyword = async (keyword?: string) => {
     return fetch(
         `${BASE_PATH}/search/multi?api_key=${API_KEY}&language=en-US&query=${keyword}&include_adult=false`
     ).then(response => response.json());

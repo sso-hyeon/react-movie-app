@@ -212,6 +212,7 @@ function Home() {
                         <Title>{movies?.results[0].title}</Title>
                         <Overview>{movies?.results[0].overview}</Overview>
                     </Banner>
+
                     <Slider>
                         <PrevBtn onClick={decraseIndex}>&lt;</PrevBtn>
                         <NextBtn onClick={incraseIndex}>&gt;</NextBtn>
