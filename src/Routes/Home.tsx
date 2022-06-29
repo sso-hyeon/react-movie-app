@@ -11,6 +11,7 @@ import { useRouteMatch } from "react-router-dom";
 
 import MakeSwiper from "../Components/Swiper";
 import Modal from "../Components/Modal";
+import { AnimatePresence } from "framer-motion";
 
 const Wrapper = styled.div`
   background-color: black;
@@ -67,13 +68,15 @@ function Home() {
           <MakeSwiper dataList={movies} url={"movies"} />
           <h3>UP COMMING</h3>
           <MakeSwiper dataList={upCommingMovies} url={"upComming"} />
-          {bigMovieMatch ? (
-            <Modal url={"movies"} movieList={movies} />
-          ) : (
-            bigMovieCommingMatch && (
-              <Modal url={"upComming"} movieList={upCommingMovies} />
-            )
-          )}
+          <AnimatePresence>
+            {bigMovieMatch ? (
+              <Modal url={"movies"} movieList={movies} />
+            ) : (
+              bigMovieCommingMatch && (
+                <Modal url={"upComming"} movieList={upCommingMovies} />
+              )
+            )}
+          </AnimatePresence>
         </>
       )}
     </Wrapper>

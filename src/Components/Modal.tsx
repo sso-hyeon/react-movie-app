@@ -1,4 +1,4 @@
-import { motion, AnimatePresence, useViewportScroll } from "framer-motion";
+import { motion, useViewportScroll } from "framer-motion";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import HomeMovieDetail from "./HomeMovieDetail";
@@ -27,8 +27,6 @@ const BigMovie = styled(motion.div)`
 `;
 
 function Modal({ url, movieList }: any) {
-  console.log(movieList);
-
   const history = useHistory();
   const bigMovieMatch = useRouteMatch<{ movieId: string }>(`/${url}/:movieId`);
   const clickedMovie =
@@ -40,7 +38,7 @@ function Modal({ url, movieList }: any) {
   const { scrollY } = useViewportScroll();
 
   return (
-    <AnimatePresence>
+    <>
       <Overlay onClick={onOverlayClick} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
       <BigMovie
         style={{ top: scrollY.get() + 100 }}
@@ -48,7 +46,7 @@ function Modal({ url, movieList }: any) {
       >
         {clickedMovie && <HomeMovieDetail url={url} />}
       </BigMovie>
-    </AnimatePresence>
+    </>
   );
 }
 
