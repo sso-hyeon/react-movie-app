@@ -5,106 +5,102 @@ import { getMovieInfo, IGetMovieInfo } from "../api";
 import { makeImagePath } from "../utils";
 
 const BigCover = styled.div`
-    width: 100%;
-    background-size: cover;
-    background-position: center center;
-    height: 400px;
+  width: 100%;
+  background-size: cover;
+  background-position: center center;
+  height: 400px;
 `;
 const BigTitle = styled.h3`
-    color: ${props => props.theme.white.lighter};
-    padding: 20px;
-    font-size: 36px;
-    position: relative;
-    margin-top: -80px;
+  color: ${props => props.theme.white.lighter};
+  padding: 20px;
+  font-size: 36px;
+  position: relative;
+  margin-top: -80px;
 `;
 const MovieDetail = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
-    span {
-        font-size: 25px;
-    }
-    a {
-        color: ${props => props.theme.black.darker};
-        background-color: ${props => props.theme.white.lighter};
-        line-height: 35px;
-        border-radius: 20px;
-        padding: 0 15px;
-    }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  span {
+    font-size: 25px;
+  }
+  a {
+    color: ${props => props.theme.black.darker};
+    background-color: ${props => props.theme.white.lighter};
+    line-height: 35px;
+    border-radius: 20px;
+    padding: 0 15px;
+  }
 `;
 const MovieGenres = styled.ul`
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    margin: 30px 0;
-    li {
-        color: ${props => props.theme.black.darker};
-        background-color: ${props => props.theme.white.lighter};
-        line-height: 30px;
-        border-radius: 15px;
-        padding: 0 10px;
-        margin-right: 10px;
-    }
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  margin: 30px 0;
+  li {
+    color: ${props => props.theme.black.darker};
+    background-color: ${props => props.theme.white.lighter};
+    line-height: 30px;
+    border-radius: 15px;
+    padding: 0 10px;
+    margin-right: 10px;
+  }
 `;
 
 const MovieTagline = styled.p`
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
 `;
 const BigOverview = styled.div`
-    padding: 30px 30px 40px;
-    font-size: 20px;
-    color: ${props => props.theme.white.lighter};
+  padding: 30px 30px 40px;
+  font-size: 20px;
+  color: ${props => props.theme.white.lighter};
 `;
 
-function HomeMovieDetail() {
-    const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
-    const { data: movieInfo, isLoading } = useQuery<IGetMovieInfo>("movieInfo", () =>
-        getMovieInfo(bigMovieMatch?.params.movieId)
-    );
+function HomeMovieDetail({ url }: any) {
+  const bigMovieMatch = useRouteMatch<{ movieId: string }>(`/${url}/:movieId`);
+  const { data: movieInfo, isLoading } = useQuery<IGetMovieInfo>("movieInfo", () =>
+    getMovieInfo(bigMovieMatch?.params.movieId)
+  );
 
-    return (
+  return (
+    <>
+      {isLoading ? (
+        <span>Loading...</span>
+      ) : (
         <>
-            {isLoading ? (
-                <span>Loading...</span>
-            ) : (
-                <>
-                    <BigCover
-                        style={{
-                            backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
-                                movieInfo?.backdrop_path,
-                                "w500"
-                            )})`
-                        }}
-                    />
-                    <BigTitle>{movieInfo?.title}</BigTitle>
-                    <BigOverview>
-                        <MovieDetail>
-                            <span>{movieInfo?.release_date}</span>
-                            <span>{movieInfo?.runtime} min</span>
-                            <span>⭐{movieInfo?.vote_average}</span>
-                            <a
-                                href={movieInfo?.homepage}
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                Homepage 👉
-                            </a>
-                        </MovieDetail>
-                        <MovieGenres>
-                            {movieInfo?.genres.map((hash, i) => (
-                                <li key={i + ""}>{hash.name}</li>
-                            ))}
-                        </MovieGenres>
-                        <MovieTagline>"{movieInfo?.tagline}"</MovieTagline>
-                        {movieInfo?.overview}
-                    </BigOverview>
-                </>
-            )}
+          <BigCover
+            style={{
+              backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
+                movieInfo?.backdrop_path,
+                "w500"
+              )})`
+            }}
+          />
+          <BigTitle>{movieInfo?.title}</BigTitle>
+          <BigOverview>
+            <MovieDetail>
+              <span>{movieInfo?.release_date}</span>
+              <span>{movieInfo?.runtime} min</span>
+              <span>⭐{movieInfo?.vote_average}</span>
+              <a href={movieInfo?.homepage} target="_blank" rel="noreferrer">
+                Homepage 👉
+              </a>
+            </MovieDetail>
+            <MovieGenres>
+              {movieInfo?.genres.map((hash, i) => (
+                <li key={i + ""}>{hash.name}</li>
+              ))}
+            </MovieGenres>
+            <MovieTagline>"{movieInfo?.tagline}"</MovieTagline>
+            {movieInfo?.overview}
+          </BigOverview>
         </>
-    );
+      )}
+    </>
+  );
 }
 
 export default HomeMovieDetail;

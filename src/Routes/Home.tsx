@@ -1,12 +1,16 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { motion, AnimatePresence, useViewportScroll } from "framer-motion";
-import { getMovies, IGetMoviesResult } from "../api";
+import {
+  getMovies,
+  getUpCommingMovies,
+  IGetMoviesResult,
+  IGetUpCommingMovies
+} from "../api";
 import { makeImagePath } from "../utils";
-import { useHistory, useRouteMatch } from "react-router-dom";
-import HomeMovieDetail from "../Components/HomeMovieDetail";
+import { useRouteMatch } from "react-router-dom";
 
 import MakeSwiper from "../Components/Swiper";
+import Modal from "../Components/Modal";
 
 const Wrapper = styled.div`
   background-color: black;
@@ -19,7 +23,7 @@ const Loader = styled.div`
   align-items: center;
 `;
 const Banner = styled.div<{ bgPhoto: string }>`
-  height: 100vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -36,41 +40,18 @@ const Overview = styled.p`
   font-size: 1.8rem;
   width: 50%;
 `;
-const Overlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  z-index: 2;
-`;
-const BigMovie = styled(motion.div)`
-  position: absolute;
-  width: 40vw;
-  min-width: 800px;
-  min-height: 700px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  border-radius: 15px;
-  overflow: hidden;
-  background-color: ${props => props.theme.black.lighter};
-  z-index: 2;
-`;
 
 function Home() {
-  const history = useHistory();
   const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
+  const bigMovieCommingMatch = useRouteMatch<{ movieId: string }>("/upComming/:movieId");
   const { data: movies, isLoading } = useQuery<IGetMoviesResult>(
     ["movies", "nowPlaying"],
     getMovies
   );
-  const { scrollY } = useViewportScroll();
-  const onOverlayClick = () => history.goBack();
-  const clickedMovie =
-    bigMovieMatch?.params.movieId &&
-    movies?.results.find(movie => String(movie.id) === bigMovieMatch.params.movieId);
+  const { data: upCommingMovies } = useQuery<IGetUpCommingMovies>(
+    ["upCommingMovies", "upComming"],
+    getUpCommingMovies
+  );
 
   return (
     <Wrapper>
@@ -82,24 +63,17 @@ function Home() {
             <Title>{movies?.results[0].title}</Title>
             <Overview>{movies?.results[0].overview}</Overview>
           </Banner>
+          <h3>NOW PLAYING</h3>
           <MakeSwiper dataList={movies} url={"movies"} />
-          <AnimatePresence>
-            {bigMovieMatch ? (
-              <>
-                <Overlay
-                  onClick={onOverlayClick}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                />
-                <BigMovie
-                  style={{ top: scrollY.get() + 100 }}
-                  layoutId={bigMovieMatch.params.movieId}
-                >
-                  {clickedMovie && <HomeMovieDetail />}
-                </BigMovie>
-              </>
-            ) : null}
-          </AnimatePresence>
+          <h3>UP COMMING</h3>
+          <MakeSwiper dataList={upCommingMovies} url={"upComming"} />
+          {bigMovieMatch ? (
+            <Modal url={"movies"} movieList={movies} />
+          ) : (
+            bigMovieCommingMatch && (
+              <Modal url={"upComming"} movieList={upCommingMovies} />
+            )
+          )}
         </>
       )}
     </Wrapper>

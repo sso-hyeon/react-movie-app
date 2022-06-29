@@ -28,7 +28,7 @@ interface ISwiperStyle {
 const SwiperStyle: ISwiperStyle = {
   width: "100%",
   height: "200px",
-  margin: "-15vh auto 0",
+  margin: "50px auto",
   overflow: "visible"
 };
 const Box = styled(motion.div)<{ bgPhoto: string }>`
@@ -87,8 +87,6 @@ const Info = styled(motion.div)`
 function MakeSwiper({ dataList, url }: any) {
   const history = useHistory();
 
-  console.log(dataList);
-
   const onBoxClicked = (dataId: number) => {
     history.push(`/${url}/${dataId}`);
   };
@@ -99,16 +97,13 @@ function MakeSwiper({ dataList, url }: any) {
         style={SwiperStyle}
         spaceBetween={5}
         slidesPerView={6}
-        // onSlideChange={() => console.log("slide change")}
-        // onSwiper={swiper => console.log(swiper)}
         navigation
         modules={[Navigation]}
       >
         {dataList?.results.slice(1).map((data: MovieResult) => (
-          <SwiperSlide key={data.id}>
+          <SwiperSlide key={url + "_" + data.id}>
             <Box
-              layoutId={data.id + ""}
-              key={data.id}
+              layoutId={url + "_" + data.id}
               whileHover="hover"
               initial="normal"
               variants={boxVariants}
